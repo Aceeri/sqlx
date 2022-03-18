@@ -21,6 +21,10 @@ impl<'q> Arguments<'q> for AnyArguments<'q> {
     {
         self.values.push(Box::new(value));
     }
+
+    fn extend(&mut self, other: Self) {
+        self.values.extend(other.values);
+    }
 }
 
 pub struct AnyArgumentBuffer<'q>(pub(crate) AnyArgumentBufferKind<'q>);

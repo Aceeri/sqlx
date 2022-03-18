@@ -26,6 +26,19 @@ impl MySqlArguments {
             self.null_bitmap[index / 8] |= (1 << (index % 8)) as u8;
         }
     }
+
+    pub(crate) fn extend(&mut self, other: Self) {
+        self.values.extend(other.values);
+        let mut index = self.types.len();
+
+        for (extend_index, kind) in other.types.iter().enumerate() {
+            // merge with previous index
+            self.null_bitmap[(index + extend_index) / 8] |= other.null_bitmap[extend_index / 8] >> (index % 8);
+            self.null_bitmap.push(other.null_bitmap[extend_index] << (index % 1));
+        }
+
+        self.types.extend(other.types);
+    }
 }
 
 impl<'q> Arguments<'q> for MySqlArguments {
@@ -41,5 +54,9 @@ impl<'q> Arguments<'q> for MySqlArguments {
         T: Encode<'q, Self::Database> + Type<Self::Database>,
     {
         self.add(value)
+    }
+
+    fn extend(&mut self, other: Self) {
+        self.extend(other);
     }
 }

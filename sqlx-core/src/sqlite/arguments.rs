@@ -56,6 +56,10 @@ impl<'q> Arguments<'q> for SqliteArguments<'q> {
     {
         self.add(value)
     }
+
+    fn extend(&mut self, other: Self) {
+        self.values.extend(other.values);
+    }
 }
 
 impl SqliteArguments<'_> {

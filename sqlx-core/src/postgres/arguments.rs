@@ -116,6 +116,10 @@ impl<'q> Arguments<'q> for PgArguments {
     {
         self.add(value)
     }
+
+    fn reserve(&mut self, other: Self) {
+
+    }
 }
 
 impl PgArgumentBuffer {
